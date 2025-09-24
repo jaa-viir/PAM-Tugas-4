@@ -1,6 +1,5 @@
 package com.example.pamtugas4
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pamtugas4.ui.theme.PAMTugas4Theme
 
-class MainActivity : ComponentActivity() {
+class Daftar : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,11 +27,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color(0xFF0A192F) // dark navy background
                 ) {
-                    LoginScreen(
-                        onDaftarClick = {
-                            val intent = Intent(this, Daftar::class.java)
-                            startActivity(intent)
-                        }
+                    RegistrationForm(
+                        onBackToLogin = { finish() }
                     )
                 }
             }
@@ -41,12 +37,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginScreen(
-    onDaftarClick: () -> Unit,
+fun RegistrationForm(
+    onBackToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var nim by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var nama by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var alamat by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -55,10 +53,10 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Header card with your info
+        // Header card
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF112240)), // lighter navy
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF112240)),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
         ) {
             Column(
@@ -80,67 +78,70 @@ fun LoginScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
         // Title
         Text(
-            text = "Login",
-            fontSize = 28.sp,
+            text = "Form Registrasi",
+            fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.padding(bottom = 8.dp)
+            color = Color.White
         )
 
+        // Input fields
         OutlinedTextField(
             value = nim,
             onValueChange = { nim = it },
-            label = { Text("Username") },
-            singleLine = true,
+            label = { Text("NIM") },
             modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedLabelColor = Color.White,
-                unfocusedLabelColor = Color.LightGray,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
+            colors = textFieldColors()
         )
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            singleLine = true,
+            value = nama,
+            onValueChange = { nama = it },
+            label = { Text("Nama") },
             modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedLabelColor = Color.White,
-                unfocusedLabelColor = Color.LightGray,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
+            colors = textFieldColors()
         )
 
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = textFieldColors()
+        )
+
+        OutlinedTextField(
+            value = alamat,
+            onValueChange = { alamat = it },
+            label = { Text("Alamat") },
+            modifier = Modifier.fillMaxWidth(),
+            minLines = 2,
+            colors = textFieldColors()
+        )
+
+        // Submit button
         Button(
             onClick = {
-                println("Login with NIM: $nim, Password: $password")
+                println("Registrasi - NIM: $nim, Nama: $nama, Email: $email, Alamat: $alamat")
+
+                if (nim.isNotEmpty() && nama.isNotEmpty() && email.isNotEmpty() && alamat.isNotEmpty()) {
+                    println("Registration successful!")
+                } else {
+                    println("Please fill in all fields")
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
-            Text("LOGIN")
+            Text("DAFTAR")
         }
 
-        TextButton(onClick = onDaftarClick) {
+        // Back to Login button
+        TextButton(onClick = onBackToLogin) {
             Text(
-                text = "Belum punya akun? Daftar",
+                text = "Kembali ke Login",
                 color = Color.LightGray,
                 textAlign = TextAlign.Center
             )
@@ -148,15 +149,27 @@ fun LoginScreen(
     }
 }
 
+@Composable
+fun textFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedContainerColor = Color.Transparent,
+    unfocusedContainerColor = Color.Transparent,
+    focusedTextColor = Color.White,
+    unfocusedTextColor = Color.White,
+    focusedLabelColor = Color.White,
+    unfocusedLabelColor = Color.LightGray,
+    focusedBorderColor = Color.White,
+    unfocusedBorderColor = Color.Gray
+)
+
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun RegistrationFormPreview() {
     PAMTugas4Theme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color(0xFF0A192F)
         ) {
-            LoginScreen(onDaftarClick = {})
+            RegistrationForm(onBackToLogin = {})
         }
     }
 }
