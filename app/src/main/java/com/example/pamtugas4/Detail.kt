@@ -12,32 +12,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pamtugas4.ui.theme.PAMTugas4Theme
 
-class Login : ComponentActivity() {
+class Detail : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Retrieve data from intent
+        val nim = intent.getStringExtra("NIM") ?: ""
+        val nama = intent.getStringExtra("NAMA") ?: ""
+
         setContent {
             PAMTugas4Theme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Color(0xFF0A192F)
                 ) {
-                    LoginScreen(
+                    DetailScreen(
+                        nim = nim,
+                        nama = nama,
                         onDaftarClick = {
                             val intent = Intent(this, Daftar::class.java)
-                            startActivity(intent)
-                        },
-                        onLoginClick = { nim, password ->
-                            // Navigate to Detail screen with data
-                            val intent = Intent(this, Detail::class.java)
-                            intent.putExtra("NIM", nim)
-                            intent.putExtra("NAMA", password) // Using password field as nama
                             startActivity(intent)
                         }
                     )
@@ -48,14 +47,12 @@ class Login : ComponentActivity() {
 }
 
 @Composable
-fun LoginScreen(
+fun DetailScreen(
+    nim: String,
+    nama: String,
     onDaftarClick: () -> Unit,
-    onLoginClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var nama by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -63,7 +60,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Header card with your info
+        // Header card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color(0xFF112240)),
@@ -88,87 +85,98 @@ fun LoginScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Title
         Text(
-            text = "Login",
+            text = "Detail Information",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.padding(bottom = 8.dp)
+            color = Color.White
         )
 
-        OutlinedTextField(
-            value = nama,
-            onValueChange = { nama = it },
-            label = { Text("Nama") },
-            singleLine = true,
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Display NIM
+        Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedLabelColor = Color.White,
-                unfocusedLabelColor = Color.LightGray,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
-        )
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF112240)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "NIM",
+                    fontSize = 14.sp,
+                    color = Color.LightGray,
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = nim.ifEmpty { "No NIM provided" },
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            singleLine = true,
+        // Display Nama
+        Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedLabelColor = Color.White,
-                unfocusedLabelColor = Color.LightGray,
-                focusedBorderColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            )
-        )
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF112240)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "Nama",
+                    fontSize = 14.sp,
+                    color = Color.LightGray,
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = nama.ifEmpty { "No name provided" },
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // DAFTAR button
         Button(
-            onClick = {
-                println("Login with Nama: $nama, Password: $password")
-                // Pass fixed NIM and nama from the first field
-                onLoginClick("235150400111012", nama)
-            },
+            onClick = onDaftarClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
-            Text("LOGIN")
-        }
-
-        TextButton(onClick = onDaftarClick) {
-            Text(
-                text = "Belum punya akun? Daftar",
-                color = Color.LightGray,
-                textAlign = TextAlign.Center
-            )
+            Text("DAFTAR")
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun DetailScreenPreview() {
     PAMTugas4Theme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color(0xFF0A192F)
         ) {
-            LoginScreen(
-                onDaftarClick = {},
-                onLoginClick = { _, _ -> }
+            DetailScreen(
+                nim = "235150400111012",
+                nama = "Javier Hafizh Musyaffa",
+                onDaftarClick = {}
             )
         }
     }

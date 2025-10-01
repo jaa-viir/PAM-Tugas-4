@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PAMTugas4">
         <activity
+            android:name=".Detail"
+            android:exported="false"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/Theme.PAMTugas4" />
+        <activity
             android:name=".Login"
             android:exported="false"
             android:label="@string/title_activity_login"

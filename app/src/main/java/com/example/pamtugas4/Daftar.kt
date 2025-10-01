@@ -1,5 +1,6 @@
 package com.example.pamtugas4
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,10 +26,19 @@ class Daftar : ComponentActivity() {
             PAMTugas4Theme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color(0xFF0A192F) // dark navy background
+                    color = Color(0xFF0A192F)
                 ) {
                     RegistrationForm(
-                        onBackToLogin = { finish() }
+                        onBackToLogin = {
+                            finish() // Close Daftar and go back to Login
+                        },
+                        onDaftarClick = { nim, nama ->
+                            // Navigate to Detail screen with data
+                            val intent = Intent(this, Detail::class.java)
+                            intent.putExtra("NIM", nim)
+                            intent.putExtra("NAMA", nama)
+                            startActivity(intent)
+                        }
                     )
                 }
             }
@@ -39,6 +49,7 @@ class Daftar : ComponentActivity() {
 @Composable
 fun RegistrationForm(
     onBackToLogin: () -> Unit,
+    onDaftarClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var nim by remember { mutableStateOf("") }
@@ -127,6 +138,7 @@ fun RegistrationForm(
 
                 if (nim.isNotEmpty() && nama.isNotEmpty() && email.isNotEmpty() && alamat.isNotEmpty()) {
                     println("Registration successful!")
+                    onDaftarClick(nim, nama)
                 } else {
                     println("Please fill in all fields")
                 }
@@ -169,7 +181,10 @@ fun RegistrationFormPreview() {
             modifier = Modifier.fillMaxSize(),
             color = Color(0xFF0A192F)
         ) {
-            RegistrationForm(onBackToLogin = {})
+            RegistrationForm(
+                onBackToLogin = {},
+                onDaftarClick = { _, _ -> }
+            )
         }
     }
 }
